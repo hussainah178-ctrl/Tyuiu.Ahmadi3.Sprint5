@@ -1,10 +1,9 @@
 ﻿using System;
 using System.IO;
-using tyuiu.cources.programming.interfaces.Sprint5;
 
 namespace Tyuiu.Ahmadi3.Sprint5.Task2.V19
 {
-    public class DataService :ISprint5Task2V19
+    public class DataService
     {
         public int[,] LoadFromDataFile(int[,] matrix)
         {
@@ -16,7 +15,6 @@ namespace Tyuiu.Ahmadi3.Sprint5.Task2.V19
             {
                 for (int j = 0; j < cols; j++)
                 {
-                    // Если элемент нечетный - заменяем на 0, иначе оставляем как есть
                     if (matrix[i, j] % 2 != 0)
                     {
                         resultMatrix[i, j] = 0;
@@ -33,36 +31,34 @@ namespace Tyuiu.Ahmadi3.Sprint5.Task2.V19
 
         public string SaveToFileTextData(int[,] matrix)
         {
-            string path = Path.GetTempFileName();
-            string newPath = path.Replace(".tmp", ".csv");
-            File.Move(path, newPath);
+            string path = $"{Directory.GetCurrentDirectory()}\\OutPutFileTask2.csv";
 
-            using (StreamWriter writer = new StreamWriter(newPath))
+            using (StreamWriter writer = new StreamWriter(path, false))
             {
                 int rows = matrix.GetLength(0);
                 int cols = matrix.GetLength(1);
 
-                string output = "";
                 for (int i = 0; i < rows; i++)
                 {
+                    string line = "";
                     for (int j = 0; j < cols; j++)
                     {
-                        output += matrix[i, j];
+                        line += matrix[i, j].ToString();
                         if (j < cols - 1)
                         {
-                            output += ";";
+                            line += ";";
                         }
                     }
+                    writer.Write(line); // Только Write, без WriteLine
+
                     if (i < rows - 1)
                     {
-                        output += Environment.NewLine;
+                        writer.WriteLine(); // Перенос строки только между строками массива
                     }
                 }
-
-                writer.Write(output);
             }
 
-            return newPath;
+            return path;
         }
     }
 }
