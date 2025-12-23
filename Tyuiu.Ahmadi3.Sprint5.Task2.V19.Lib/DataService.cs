@@ -1,9 +1,10 @@
 ﻿using System;
 using System.IO;
+using tyuiu.cources.programming.interfaces.Sprint5;
 
 namespace Tyuiu.Ahmadi3.Sprint5.Task2.V19
 {
-    public class DataService
+    public class DataService :ISprint5Task2V19
     {
         public int[,] LoadFromDataFile(int[,] matrix)
         {
