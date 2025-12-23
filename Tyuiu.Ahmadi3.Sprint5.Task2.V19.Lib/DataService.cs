@@ -1,10 +1,11 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using tyuiu.cources.programming.interfaces.Sprint5;
 
 namespace Tyuiu.Ahmadi3.Sprint5.Task2.V19
 {
-    public class DataService :ISprint5Task2V19
+    public class DataService: ISprint5Task2V19
     {
         public int[,] LoadFromDataFile(int[,] matrix)
         {
@@ -16,6 +17,7 @@ namespace Tyuiu.Ahmadi3.Sprint5.Task2.V19
             {
                 for (int j = 0; j < cols; j++)
                 {
+                    // Проверка на нечетность
                     if (matrix[i, j] % 2 != 0)
                     {
                         resultMatrix[i, j] = 0;
@@ -32,32 +34,31 @@ namespace Tyuiu.Ahmadi3.Sprint5.Task2.V19
 
         public string SaveToFileTextData(int[,] matrix)
         {
-            string path = $"{Directory.GetCurrentDirectory()}\\OutPutFileTask2.csv";
+            string path = $@"{Directory.GetCurrentDirectory()}\OutPutFileTask2.csv";
 
-            using (StreamWriter writer = new StreamWriter(path, false))
+            // Создаем строку в формате CSV
+            StringBuilder sb = new StringBuilder();
+            int rows = matrix.GetLength(0);
+            int cols = matrix.GetLength(1);
+
+            for (int i = 0; i < rows; i++)
             {
-                int rows = matrix.GetLength(0);
-                int cols = matrix.GetLength(1);
-
-                for (int i = 0; i < rows; i++)
+                for (int j = 0; j < cols; j++)
                 {
-                    string line = "";
-                    for (int j = 0; j < cols; j++)
+                    sb.Append(matrix[i, j]);
+                    if (j < cols - 1)
                     {
-                        line += matrix[i, j].ToString();
-                        if (j < cols - 1)
-                        {
-                            line += ";";
-                        }
-                    }
-                    writer.Write(line); // Только Write, без WriteLine
-
-                    if (i < rows - 1)
-                    {
-                        writer.WriteLine(); // Перенос строки только между строками массива
+                        sb.Append(";");
                     }
                 }
+                if (i < rows - 1)
+                {
+                    sb.AppendLine();
+                }
             }
+
+            // Записываем в файл
+            File.WriteAllText(path, sb.ToString(), Encoding.Default);
 
             return path;
         }

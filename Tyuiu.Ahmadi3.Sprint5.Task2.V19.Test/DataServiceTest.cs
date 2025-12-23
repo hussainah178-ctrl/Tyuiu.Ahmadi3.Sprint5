@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
+using System.Text;
 
 namespace Tyuiu.Ahmadi3.Sprint5.Task2.V19.Test
 {
@@ -26,7 +27,14 @@ namespace Tyuiu.Ahmadi3.Sprint5.Task2.V19.Test
                 { 0, 4, 8 }
             };
 
-            CollectionAssert.AreEqual(wait, res);
+            // Проверяем каждый элемент
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    Assert.AreEqual(wait[i, j], res[i, j]);
+                }
+            }
         }
 
         [TestMethod]
@@ -43,15 +51,24 @@ namespace Tyuiu.Ahmadi3.Sprint5.Task2.V19.Test
 
             string path = ds.SaveToFileTextData(matrix);
 
-            bool fileExists = File.Exists(path);
-            Assert.AreEqual(true, fileExists);
+            // Проверяем, что файл создан
+            Assert.IsTrue(File.Exists(path), $"Файл {path} не найден!");
 
+            // Читаем содержимое файла
             string fileContent = File.ReadAllText(path);
 
-            // Проверяем наличие ожидаемых строк
-            Assert.IsTrue(fileContent.Contains("0;2;0"));
-            Assert.IsTrue(fileContent.Contains("8;8;2"));
-            Assert.IsTrue(fileContent.Contains("0;4;8"));
+            // Удаляем все переносы строк для сравнения
+            string cleanContent = fileContent.Replace("\r\n", "").Replace("\n", "");
+
+            // Ожидаемый результат (ВСЕ В ОДНУ СТРОКУ)
+            string expected = "0;2;0;8;8;2;0;4;8";
+
+            Assert.AreEqual(expected, cleanContent);
+
+            // Проверяем, что нет лишних символов
+            Assert.IsFalse(fileContent.Contains("["));
+            Assert.IsFalse(fileContent.Contains("]"));
+            Assert.IsFalse(fileContent.Contains(","));
 
             // Удаляем файл после теста
             File.Delete(path);
