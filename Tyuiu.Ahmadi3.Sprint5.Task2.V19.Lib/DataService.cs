@@ -6,7 +6,7 @@ namespace Tyuiu.Ahmadi3.Sprint5.Task2.V19
 {
     public class DataService :ISprint5Task2V19
     {
-        public int[,] GetMatrix(int[,] matrix)
+        public int[,] LoadFromDataFile(int[,] matrix)
         {
             int rows = matrix.GetLength(0);
             int cols = matrix.GetLength(1);
@@ -16,7 +16,8 @@ namespace Tyuiu.Ahmadi3.Sprint5.Task2.V19
             {
                 for (int j = 0; j < cols; j++)
                 {
-                    if (matrix[i, j] % 2 != 0) // если нечетное
+                    // Если элемент нечетный - заменяем на 0, иначе оставляем как есть
+                    if (matrix[i, j] % 2 != 0)
                     {
                         resultMatrix[i, j] = 0;
                     }
@@ -30,38 +31,38 @@ namespace Tyuiu.Ahmadi3.Sprint5.Task2.V19
             return resultMatrix;
         }
 
-        public string SaveToFileData(int[,] matrix)
+        public string SaveToFileTextData(int[,] matrix)
         {
-            string path = Path.Combine(Path.GetTempPath(), "OutPutFileTask2.csv");
+            string path = Path.GetTempFileName();
+            string newPath = path.Replace(".tmp", ".csv");
+            File.Move(path, newPath);
 
-            using (StreamWriter writer = new StreamWriter(path, false))
+            using (StreamWriter writer = new StreamWriter(newPath))
             {
                 int rows = matrix.GetLength(0);
                 int cols = matrix.GetLength(1);
 
+                string output = "";
                 for (int i = 0; i < rows; i++)
                 {
                     for (int j = 0; j < cols; j++)
                     {
-                        writer.Write(matrix[i, j]);
-                        if (j != cols - 1)
+                        output += matrix[i, j];
+                        if (j < cols - 1)
                         {
-                            writer.Write(";");
+                            output += ";";
                         }
                     }
-                    if (i != rows - 1)
+                    if (i < rows - 1)
                     {
-                        writer.WriteLine();
+                        output += Environment.NewLine;
                     }
                 }
+
+                writer.Write(output);
             }
 
-            return path;
-        }
-
-        public string SaveToFileTextData(int[,] matrix)
-        {
-            throw new NotImplementedException();
+            return newPath;
         }
     }
 }

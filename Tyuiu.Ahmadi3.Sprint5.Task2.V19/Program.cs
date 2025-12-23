@@ -12,74 +12,57 @@ namespace Tyuiu.Ahmadi3.Sprint5.Task2.V19
             Console.WriteLine("* ИСХОДНЫЕ ДАННЫЕ:                                                        *");
             Console.WriteLine("***************************************************************************");
 
-            // Создаем массив 3x3 как в задании
-            int[,] matrix = new int[3, 3];
+            // Массив из задания
+            int[,] mtrx = new int[3, 3]
+            {
+                { 9, 2, 5 },
+                { 8, 8, 2 },
+                { 7, 4, 8 }
+            };
 
-            Console.WriteLine("Введите элементы массива 3x3:");
-
-            // Заполнение массива с клавиатуры
+            Console.WriteLine("Массив:");
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    Console.Write($"Элемент [{i},{j}]: ");
-                    matrix[i, j] = Convert.ToInt32(Console.ReadLine());
+                    Console.Write($"{mtrx[i, j]} \t");
                 }
+                Console.WriteLine();
             }
-
-            // Если нужно использовать готовый массив из задания:
-            // int[,] matrix = new int[3, 3] 
-            // {
-            //     { 9, 2, 5 },
-            //     { 8, 8, 2 },
-            //     { 7, 4, 8 }
-            // };
-
-            Console.WriteLine();
-            Console.WriteLine("Исходный массив:");
-            PrintMatrix(matrix);
 
             Console.WriteLine();
             Console.WriteLine("***************************************************************************");
             Console.WriteLine("* РЕЗУЛЬТАТ:                                                              *");
             Console.WriteLine("***************************************************************************");
 
-            // Обрабатываем массив
-            int[,] resultMatrix = ds.GetMatrix(matrix);
+            // Получаем обработанный массив
+            int[,] res = ds.LoadFromDataFile(mtrx);
 
             Console.WriteLine("Массив после замены нечетных элементов на 0:");
-            PrintMatrix(resultMatrix);
-
-            // Сохраняем в файл
-            string res = ds.SaveToFileData(resultMatrix);
-
-            Console.WriteLine();
-            Console.WriteLine("Файл: " + res);
-            Console.WriteLine("Создан!");
-
-            // Выводим содержимое файла
-            Console.WriteLine();
-            Console.WriteLine("Содержимое файла:");
-            string fileContent = System.IO.File.ReadAllText(res);
-            Console.WriteLine(fileContent.Replace(';', '\t'));
-
-            Console.ReadKey();
-        }
-
-        static void PrintMatrix(int[,] matrix)
-        {
-            int rows = matrix.GetLength(0);
-            int cols = matrix.GetLength(1);
-
-            for (int i = 0; i < rows; i++)
+            for (int i = 0; i < 3; i++)
             {
-                for (int j = 0; j < cols; j++)
+                for (int j = 0; j < 3; j++)
                 {
-                    Console.Write($"{matrix[i, j],4}");
+                    Console.Write($"{res[i, j]} \t");
                 }
                 Console.WriteLine();
             }
+
+            // Сохраняем в файл
+            string path = ds.SaveToFileTextData(res);
+
+            Console.WriteLine();
+            Console.WriteLine("Данные сохранены в файл: " + path);
+
+            // Читаем и выводим содержимое файла
+            Console.WriteLine();
+            Console.WriteLine("Содержимое файла:");
+            string fileContent = File.ReadAllText(path);
+            Console.WriteLine(fileContent.Replace(";", "\t"));
+
+            Console.WriteLine();
+            Console.WriteLine("Для продолжения нажмите любую клавишу...");
+            Console.ReadKey();
         }
     }
-}// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+}
