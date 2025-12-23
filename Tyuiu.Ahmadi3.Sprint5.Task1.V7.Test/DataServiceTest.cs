@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.IO;
 
 namespace Tyuiu.Ahmadi3.Sprint5.Task1.V7.Test
@@ -7,34 +8,58 @@ namespace Tyuiu.Ahmadi3.Sprint5.Task1.V7.Test
     public class DataServiceTest
     {
         [TestMethod]
-        public void CheckCalcFunction()
+        public void CheckGetMassFunction()
         {
             DataService ds = new DataService();
-            double res = ds.CalcFunction(0);
-            // Пример ожидаемого значения для x=0:
-            // sin(0) = 0, значит term1 = 0/(0+1)=0, term2 = 0, result = 0 - 0 - 0 = 0
-            Assert.AreEqual(0, res);
+
+            int startValue = -5;
+            int stopValue = 5;
+
+            double[] result = ds.GetMassFunction(startValue, stopValue);
+
+            // Проверяем количество элементов
+            Assert.AreEqual(11, result.Length);
+
+            // Проверяем конкретные значения (x = -1 должно быть 0 из-за деления на ноль)
+            Assert.AreEqual(0, result[4]); // x = -1 (индекс 4: -5, -4, -3, -2, -1)
+
+            // Проверяем округление до 2 знаков
+            foreach (double value in result)
+            {
+                string strValue = value.ToString("F2");
+                double roundedValue = Math.Round(value, 2);
+                Assert.AreEqual(roundedValue, value, 0.001);
+            }
         }
 
         [TestMethod]
-        public void CheckCalcFunctionDivisionByZero()
+        public void CheckSaveToFile()
         {
             DataService ds = new DataService();
-            double res = ds.CalcFunction(-1);
-            // x = -1 -> деление на ноль, должно вернуть 0
-            Assert.AreEqual(0, res);
-        }
 
-        [TestMethod]
-        public void ValidSaveToFile()
-        {
-            DataService ds = new DataService();
-            string path = ds.SaveToFile(0, 5);
-            Assert.IsTrue(File.Exists(path));
+            string path = ds.SaveToFile(-5, 5);
 
+            // Проверяем, что файл создан
+            Assert.IsTrue(File.Exists(path), $"Файл {path} не найден!");
+
+            // Проверяем содержимое файла
             string fileContent = File.ReadAllText(path);
+
+            Assert.IsTrue(fileContent.Contains("Табулирование"));
+            Assert.IsTrue(fileContent.Contains("x"));
             Assert.IsTrue(fileContent.Contains("F(x)"));
 
+            // Проверяем наличие всех значений от -5 до 5
+            for (int x = -5; x <= 5; x++)
+            {
+                Assert.IsTrue(fileContent.Contains(x.ToString()));
+            }
+
+            // Проверяем, что есть значения с двумя знаками после запятой
+            Assert.IsTrue(fileContent.Contains(".00") || fileContent.Contains(".01") ||
+                         fileContent.Contains(".02") || fileContent.Contains(".99"));
+
+            // Удаляем файл после теста
             File.Delete(path);
         }
     }

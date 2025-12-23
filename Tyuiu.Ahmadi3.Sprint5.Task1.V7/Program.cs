@@ -1,29 +1,47 @@
 ﻿using System;
-using System.IO;
 
-namespace ConsoleApp
+namespace Tyuiu.Ahmadi3.Sprint5.Task1.V7
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Tyuiu.Ahmadi3.Sprint5.Task1.V7.DataService ds = new Tyuiu.Ahmadi3.Sprint5.Task1.V7.DataService();
+            DataService ds = new DataService();
 
             int startValue = -5;
             int stopValue = 5;
 
-            Console.WriteLine("Табулирование функции F(x) на интервале [{0}, {1}] с шагом 1", startValue, stopValue);
-            Console.WriteLine("{0,10} {1,10}", "x", "F(x)");
+            Console.WriteLine("***************************************************************************");
+            Console.WriteLine("* ИСХОДНЫЕ ДАННЫЕ:                                                        *");
+            Console.WriteLine("***************************************************************************");
+            Console.WriteLine($"startValue = {startValue}");
+            Console.WriteLine($"stopValue = {stopValue}");
 
+            Console.WriteLine();
+            Console.WriteLine("***************************************************************************");
+            Console.WriteLine("* РЕЗУЛЬТАТ:                                                              *");
+            Console.WriteLine("***************************************************************************");
+
+            double[] result = ds.GetMassFunction(startValue, stopValue);
+
+            Console.WriteLine("+----------+----------+");
+            Console.WriteLine("|    x     |   f(x)   |");
+            Console.WriteLine("+----------+----------+");
+
+            int count = 0;
             for (int x = startValue; x <= stopValue; x++)
             {
-                double y = ds.CalcFunction(x);
-                Console.WriteLine("{0,10} {1,10:F2}", x, y);
+                Console.WriteLine("|{0,6:d}    | {1,8:f2} |", x, result[count]);
+                count++;
             }
+            Console.WriteLine("+----------+----------+");
 
-            string resultFilePath = ds.SaveToFile(startValue, stopValue);
-            Console.WriteLine("\nФайл с результатами сохранён по пути:");
-            Console.WriteLine(resultFilePath);
+            string res = ds.SaveToFile(startValue, stopValue);
+
+            Console.WriteLine();
+            Console.WriteLine("Файл: " + res);
+            Console.WriteLine("Создан!");
+
             Console.ReadKey();
         }
     }
