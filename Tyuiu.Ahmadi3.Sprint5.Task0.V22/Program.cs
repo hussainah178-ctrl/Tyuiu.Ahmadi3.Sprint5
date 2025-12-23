@@ -24,7 +24,7 @@ namespace Tyuiu.Ahmadi3.Sprint5.Task5.V22
             Console.WriteLine(quotedResult);
 
             string tempPath = Path.GetTempPath();
-            string outputFile = Path.Combine(tempPath, "OutPutFileTask0.txt");
+            string outputFile = Path.Combine(tempPath, "OutPutFileTask0.txt");  
 
             File.WriteAllText(outputFile, quotedResult);
 
